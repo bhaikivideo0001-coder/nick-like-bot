@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Like Sender</title>
+<style>
+:root{
+  --bg:#0e1116; --panel:#171b23; --line:#262c38; --text:#e8ebf1; --muted:#8b93a3;
+  --accent:#3ddc97; --accent-ink:#06221a; --danger:#ff6b6b; --blue:#6cb8ff;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){--bg:#f3f5f8;--panel:#fff;--line:#dde2ea;--text:#141922;--muted:#5d6676;--accent:#0f9d66;--accent-ink:#fff;--danger:#d93a3a;--blue:#1f6fd1;color-scheme:light}
+}
+:root[data-theme="light"]{--bg:#f3f5f8;--panel:#fff;--line:#dde2ea;--text:#141922;--muted:#5d6676;--accent:#0f9d66;--accent-ink:#fff;--danger:#d93a3a;--blue:#1f6fd1;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.wrap{max-width:520px;margin:0 auto;padding:28px 18px 48px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+h1{font-size:1.45rem;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:.92rem;margin:2px 0 0}
+.icon-btn{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;width:40px;height:40px;cursor:pointer;font-size:1.05rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+label{display:block;font-size:.85rem;color:var(--muted);margin:0 0 6px}
+.field{margin-bottom:14px}
+input,select{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px 13px;font:inherit}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.row{display:grid;grid-template-columns:130px 1fr;gap:12px}
+.btn{width:100%;background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:13px;font:inherit;font-weight:650;cursor:pointer;display:flex;gap:8px;align-items:center;justify-content:center}
+.btn[disabled]{opacity:.6;cursor:progress}
+.spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .7s linear infinite;display:none}
+.btn[disabled] .spin{display:inline-block}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2s}}
+#out{margin-top:18px}
+.result{border:1px solid var(--accent);border-radius:14px;overflow:hidden;background:var(--panel)}
+.result .top{background:color-mix(in srgb,var(--accent) 16%,transparent);padding:14px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.result dl{margin:0;padding:6px 16px}
+.result .r{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.result .r:last-child{border-bottom:0}
+.r dt{color:var(--muted)} .r dd{margin:0;font-weight:600;text-align:right;word-break:break-all}
+.sep{height:0;border-top:2px solid var(--line);margin:4px 0}
+.err{border:1px solid var(--danger);border-radius:14px;padding:14px 16px;background:color-mix(in srgb,var(--danger) 10%,transparent)}
+.err b{color:var(--danger)} .err p{margin:6px 0 0;color:var(--muted);font-size:.9rem;word-break:break-word}
+.actions{display:flex;gap:10px;padding:0 16px 16px}
+.ghost{flex:1;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font:inherit;cursor:pointer}
+h2{font-size:1rem;margin:28px 0 10px}
+.hist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.hist li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 13px;display:flex;justify-content:space-between;gap:10px;font-size:.92rem;cursor:pointer}
+.hist small{color:var(--muted)}
+.empty{color:var(--muted);font-size:.9rem}
+.clear{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-size:.85rem;float:right;margin-top:-26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Like Sender</h1>
+      <p class="sub">Region aur UID daalo, likes bhejo.</p>
+    </div>
+    <button class="icon-btn" id="theme" aria-label="Toggle theme">◐</button>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label for="region">Region</label>
+        <select id="region">
+          <option value="ind">IND</option>
+          <option value="br">BR</option>
+          <option value="us">US</option>
+          <option value="sac">SAC</option>
+          <option value="na">NA</option>
+          <option value="sg">SG</option>
+          <option value="bd">BD</option>
+          <option value="id">ID</option>
+          <option value="th">TH</option>
+          <option value="me">ME</option>
+          <option value="pk">PK</option>
+          <option value="vn">VN</option>
+          <option value="tw">TW</option>
+          <option value="ru">RU</option>
+          <option value="eu">EU</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="uid">Player UID</label>
+        <input id="uid" inputmode="numeric" autocomplete="off" placeholder="5513136279" maxlength="15">
+      </div>
+    </div>
+    <button class="btn" id="go"><span class="spin"></span><span id="goTxt">Send likes</span></button>
+  </div>
+
+  <div id="out" aria-live="polite"></div>
+
+  <h2>Recent</h2>
+  <button class="clear" id="clear">Clear</button>
+  <ul class="hist" id="hist"></ul>
+</div>
+
+<script>
+(function(){
+  var API = "/like";
+  var $ = function(i){return document.getElementById(i)};
+  var go=$("go"), goTxt=$("goTxt"), out=$("out"), hist=$("hist");
+
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+  /* history */
+  function getH(){try{return JSON.parse(localStorage.getItem("likeHist")||"[]")}catch(e){return []}}
+  function setH(h){try{localStorage.setItem("likeHist",JSON.stringify(h))}catch(e){}}
+  function renderH(){
+    var h=getH();
+    if(!h.length){hist.innerHTML='<li class="empty" style="cursor:default;background:none;border:0;padding:0">Abhi koi request nahi.</li>';return}
+    hist.innerHTML=h.map(function(x,i){
+      return '<li data-i="'+i+'"><span>'+esc(x.name)+' <small>'+esc(x.uid)+'</small></span><small>'+esc(x.region.toUpperCase())+' · +'+esc(x.given)+'</small></li>'
+    }).join("");
+  }
+  hist.addEventListener("click",function(e){
+    var li=e.target.closest("li[data-i]"); if(!li) return;
+    var x=getH()[li.dataset.i]; if(!x) return;
+    $("uid").value=x.uid; $("region").value=x.region;
+  });
+  $("clear").onclick=function(){setH([]);renderH()};
+
+  /* theme */
+  $("theme").onclick=function(){
+    var r=document.documentElement;
+    var dark=r.dataset.theme?r.dataset.theme==="dark":!matchMedia("(prefers-color-scheme: light)").matches;
+    r.dataset.theme=dark?"light":"dark";
+  };
+
+  function showError(msg){
+    out.innerHTML='<div class="err"><b>❌ Error</b><p>'+esc(msg)+'</p></div>';
+  }
+
+  function showResult(d,uid,region){
+    var name=d.PlayerNickname||"N/A",
+        before=d.LikesbeforeCommand!=null?d.LikesbeforeCommand:"0",
+        given=d.LikesGivenByAPI!=null?d.LikesGivenByAPI:"0",
+        after=d.LikesafterCommand!=null?d.LikesafterCommand:"0",
+        rem=d.remains!=null?d.remains:"N/A";
+    var text=["🎉 LIKE SUCCESSFULLY 👍","👑 Name: "+name,"🕹️ UID: "+uid,"🌐 Region: "+region.toUpperCase(),
+      "❤️ Likes Before: "+before,"🩵 Likes Given: "+given,"💚 Likes after: "+after,"📊 Remaining Requests: "+rem].join("\n");
+    out.innerHTML=
+      '<div class="result"><div class="top"><span>🎉 Like successfully 👍</span></div><dl>'+
+      '<div class="r"><dt>👑 Name</dt><dd>'+esc(name)+'</dd></div>'+
+      '<div class="r"><dt>🕹️ UID</dt><dd>'+esc(uid)+'</dd></div>'+
+      '<div class="r"><dt>🌐 Region</dt><dd>'+esc(region.toUpperCase())+'</dd></div>'+
+      '<div class="sep"></div>'+
+      '<div class="r"><dt>❤️ Likes before</dt><dd>'+esc(before)+'</dd></div>'+
+      '<div class="r"><dt>🩵 Likes given</dt><dd>'+esc(given)+'</dd></div>'+
+      '<div class="r"><dt>💚 Likes after</dt><dd>'+esc(after)+'</dd></div>'+
+      '<div class="sep"></div>'+
+      '<div class="r"><dt>📊 Remaining requests</dt><dd>'+esc(rem)+'</dd></div></dl>'+
+      '<div class="actions"><button class="ghost" id="copy">Copy result</button></div></div>';
+    $("copy").onclick=function(){
+      var b=this;
+      (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(function(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy result"},1500)},function(){b.textContent="Copy failed"});
+    };
+    var h=getH();
+    h.unshift({name:name,uid:uid,region:region,given:given});
+    setH(h.slice(0,8)); renderH();
+  }
+
+  async function run(){
+    var uid=$("uid").value.trim(), region=$("region").value;
+    if(!/^\d{5,15}$/.test(uid)){showError("Valid UID daalo (sirf numbers, 5–15 digits).");return}
+    go.disabled=true; goTxt.textContent="Processing…";
+    out.innerHTML='<p class="empty">⏳ Processing your request…</p>';
+    try{
+      var ctl=new AbortController(), t=setTimeout(function(){ctl.abort()},30000);
+      var res=await fetch(API+"?uid="+encodeURIComponent(uid)+"&server_name="+encodeURIComponent(region),{signal:ctl.signal});
+      clearTimeout(t);
+      if(!res.ok) throw new Error("API ne HTTP "+res.status+" diya.");
+      var d=await res.json();
+      showResult(d,uid,region);
+    }catch(e){
+      showError(e.name==="AbortError"?"Request timeout ho gayi (30s).":"API se connect nahi hua. "+e.message);
+    }finally{
+      go.disabled=false; goTxt.textContent="Send likes";
+    }
+  }
+
+  go.onclick=run;
+  $("uid").addEventListener("keydown",function(e){if(e.key==="Enter")run()});
+  renderH();
+})();
+</script>
+</body>
+</html>
